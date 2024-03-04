@@ -9,7 +9,27 @@ from src.address import models
 
 models.Base.metadata.create_all(bind=engine)
 
-app = FastAPI()
+description = """
+
+## Address
+
+You will be able to:
+
+* **Create address**
+* **Read list of addresses**
+* **Read address**
+* **Update address**
+* **Delete address**
+* **Retrieve the addresses that are within a given distance and location coordinates.**
+"""
+
+app = FastAPI(
+    title="Address Book Application",
+    description=description,
+    summary="Application where API users can create, update, delete addresses and retreive addresses within a given distance and location coordinates",
+    version="0.0.1",
+)
+
 app.include_router(router.router)
 
 origins = [

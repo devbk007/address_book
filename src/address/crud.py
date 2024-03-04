@@ -122,6 +122,6 @@ def find_address(db:Session, distance:float, latitude:float, longitude:float):
     for address in address_list:
         lat = address.latitude
         lon = address.longitude
-        if calculate_distance(lat, lon, latitude, longitude) >= distance:
+        if calculate_distance(lat, lon, latitude, longitude) <= distance:
             filtered_addresses.append(address)
     return filtered_addresses

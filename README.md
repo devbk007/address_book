@@ -3,7 +3,7 @@
 ## Download Codebase
 Clone the repository using the command
 ```bash
-git clone " "
+git clone "https://github.com/devbk007/address_book.git"
 ```
 
 ## Setting up virtual environment

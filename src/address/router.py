@@ -9,7 +9,7 @@ from typing import List
 
 router = APIRouter(
     prefix="/address",
-    tags=["address"],
+    tags=["Address"],
     responses={
         400: {"description": "Bad Request"},
         404: {"description": "Not Found"},
@@ -19,7 +19,7 @@ router = APIRouter(
 
 logger = logging.getLogger(__name__)
 
-@router.post("/", response_model=schemas.Address)
+@router.post("/", response_model=schemas.Address, description="Create unique address")
 def create_address(address: schemas.AddressBase, db:Session = Depends(get_db)):
     try:
         db_address = crud.get_address_by_first_line(db=db, first_line=address.first_line)
@@ -37,7 +37,7 @@ def create_address(address: schemas.AddressBase, db:Session = Depends(get_db)):
         logger.error("Internal server error: %s", e)
         raise HTTPException(status_code=500, detail="Internal server error")
 
-@router.get("/", response_model=List[schemas.Address])
+@router.get("/", response_model=List[schemas.Address], description="Read list of addresses")
 def get_address_list(db:Session = Depends(get_db)):
     try:
         address = crud.get_address(db)
@@ -52,7 +52,7 @@ def get_address_list(db:Session = Depends(get_db)):
         logger.error("Internal server error: %s", e)
         raise HTTPException(status_code=500, detail="Internal server error")
 
-@router.get("/{address_id}", response_model=schemas.Address)
+@router.get("/{address_id}", response_model=schemas.Address,description="Read single address using ID")
 def get_address(address_id:int, db:Session = Depends(get_db)):
     try:
         db_address = crud.get_address_by_id(db=db, id=address_id)
@@ -67,7 +67,7 @@ def get_address(address_id:int, db:Session = Depends(get_db)):
         logger.error("Internal server error: %s", e)
         raise HTTPException(status_code=500, detail="Internal server error")
     
-@router.put("/{address_id}", response_model=schemas.Address)
+@router.put("/{address_id}", response_model=schemas.Address,description="Update existing address using ID")
 def update_address(address:schemas.AddressBase, address_id:int, db:Session = Depends(get_db)):
     try:
         db_address = crud.update_address(db=db, id=address_id, address=address)
@@ -85,7 +85,7 @@ def update_address(address:schemas.AddressBase, address_id:int, db:Session = Dep
         logger.error("Internal server error: %s", e)
         raise HTTPException(status_code=500, detail="Internal server error")
     
-@router.delete("/{address_id}")
+@router.delete("/{address_id}", description="Delete existing address using ID")
 def delete_address(address_id:int, db:Session=Depends(get_db)):
     try:
         success, error_message = crud.delete_address(db=db, id=address_id)
@@ -104,9 +104,7 @@ def delete_address(address_id:int, db:Session=Depends(get_db)):
         logger.error("Internal server error: %s", e)
         raise HTTPException(status_code=500, detail="Internal server error")
     
-@router.get("/coordinates/", response_model=List[schemas.Address],
-            tags=["nearest_address"]
-            )
+@router.get("/coordinates/", response_model=List[schemas.Address], summary="Get nearest address", description="Retrieve the addresses that are within a given distance and location coordinates")
 def get_addresses(distance:float, latitude:float, longitude:float, db:Session = Depends(get_db)):
     try:
         addresses = crud.find_address(db=db, distance=distance, latitude=latitude, longitude=longitude)
